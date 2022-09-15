@@ -1,6 +1,8 @@
 # PruebaTecnica
 Prueba técnica para la empresa VELAIO
+
 Problema
+
 Se desea implementar un mini-portal de noticias web con seguridad básica (Autenticación de
 usuario), que permita acceder a las siguientes funcionalidades: mostrar noticias y el estado del
 tiempo.
