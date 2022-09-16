@@ -5,11 +5,13 @@ const session = require('express-session');
 const { serializeUser, deserializeUser } = require('passport');
 const passportLocal = require('passport-local').Strategy;
 const mysql = require('mysql');
-const myconnection = require('express-myconnection');
+const request = require('request');
 
-
+const apiKey = '35d760f3a0f94b1c87473893a9edfcbf';
+const apiUrl = 'https://newsapi.org/v2/everything?q=tesla&from=2022-08-16&sortBy=publishedAt&apiKey=' + apiKey;
 const app = express();
 
+//Conexion con la bd
 const conexion = mysql.createConnection({
     host: 'localhost',
     database: 'prueba',
@@ -17,13 +19,6 @@ const conexion = mysql.createConnection({
     password: 'password'
 });
 
-conexion.connect(function(err){
-    if(err){
-        throw err;
-    } else {
-        console.log('Conexion con la base de datos exitosa');
-    }
-});
 
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser('secreto'));
@@ -66,6 +61,8 @@ app.get("/home",  (req, res, next) => {
     res.redirect("/login");
 },(req, res)=>{
     res.render("home");
+}, function(req, res) {
+
 });
 
 app.get("/login",(req, res)=>{
