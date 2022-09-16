@@ -13,8 +13,8 @@ const apiKey = "969f8f5a1a5c82ef6f8dcac06259a549";
 const locations = "Colombia";
 const api = "https://api.openweathermap.org/data/2.5/weather?q="+locations+"&appid="+apiKey;
 
-var my_api_key = "888e1bae53f6445c8c7a762df5510430";
-var api_url = "https://newsapi.org/v2/everything?q=microsoft&from=2021-08-17&sortBy=publishedAt&apiKey="+my_api_key;
+var my_api_key = "35d760f3a0f94b1c87473893a9edfcbf";
+var api_url = "https://newsapi.org/v2/everything?q=microsoft&from=2022-09-15&sortBy=publishedAt&apiKey="+my_api_key;
 
 const app = express();
 
@@ -100,7 +100,6 @@ app.get("/news", (req, res, next) => {
 
     res.redirect("/login");
 }, function(expReq, expRes){
-
 	request({
 		uri: api_url,
 		method: 'GET'
@@ -111,9 +110,13 @@ app.get("/news", (req, res, next) => {
 
 	  		var finalResponse = `<style>
 	  							 table thead th{
-	  							 	background-color: #a7d6fc;
-	  							 	color: #020801;
+	  							 	background-color: rgb(23, 79, 94);
+	  							 	color: rgb(255, 255, 255);
 	  							 }
+								table{
+									background-color: rgb(17, 152, 185);
+									color: rgb(255, 255, 255);
+								}
 	  							 </style>
 	  							 <table>
 	  							 <thead>
@@ -173,7 +176,6 @@ app.get("/news", (req, res, next) => {
  								 finalResponse += `</tbody></table></body></html>`;
  								 expRes.send(finalResponse);
  								});
-
 });
 
 app.get("/login",(req, res)=>{
