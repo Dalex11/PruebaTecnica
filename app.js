@@ -8,6 +8,7 @@ const mysql = require('mysql');
 const request = require('request');
 
 const https = require("https");
+const { dirname } = require('path');
 const apiKey = "969f8f5a1a5c82ef6f8dcac06259a549";
 const locations = "Colombia";
 const api = "https://api.openweathermap.org/data/2.5/weather?q="+locations+"&appid="+apiKey;
@@ -25,7 +26,7 @@ const conexion = mysql.createConnection({
     password: 'password'
 });
 
-
+app.use(express.static('public'));  
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser('secreto'));
 app.use(session({
@@ -69,18 +70,36 @@ app.get("/home",  (req, res, next) => {
     res.render("home");
 });
 
-app.get("/weather", function(req, res) {
+app.get("/weather", (req, res, next) => {
+    if(req.isAuthenticated()) return next();
+
+    res.redirect("/login");
+}, function(req, res) {
     https.get(api, function(response){
         response.on("data", function(data){
             const weatherData = JSON.parse(data);
             const temperature = weatherData.main.temp;
-            res.write("<h1> La temperatura en colombia es: "+ temperature +"</h1>");
+            const tempmin = weatherData.main.temp_min;
+            const tempmax = weatherData.main.temp_max;
+            const presion = weatherData.main.pressure;
+            const humedad = weatherData.main.humidity;
+            const hora = weatherData.main.timezone;
+            res.write("<p> La temperatura en "+locations+" es: <b>"+ temperature +"</b></p>"+
+                      "<p> \n La temperatura Minima en "+locations+" es: <b>"+ tempmin +"</b></p>" +
+                      "<p> \n La temperatura Maxima en "+locations+" es: <b>"+ tempmax +"</b></p>" +
+                      "<p> \n La presion en "+locations+" es: <b>"+ presion +"</b></p>"+
+                      "<p> \n La humedad en "+locations+" es: <b>"+ humedad +"</b></p>" +
+                      "<p> \n Los zona horaria en "+locations+" es: <b>"+ hora +"</b></p>" );
             res.send()
         });
     });
 });
 
-app.get("/news", function(expReq, expRes){
+app.get("/news", (req, res, next) => {
+    if(req.isAuthenticated()) return next();
+
+    res.redirect("/login");
+}, function(expReq, expRes){
 
 	request({
 		uri: api_url,

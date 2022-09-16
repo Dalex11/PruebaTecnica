@@ -1,11 +1,44 @@
-h1 {
-    color: blue;
-    background-color: yellow;
-    border: 1px solid black;
-  }
-  
-p {
-    color: red;
+body {
+    color: rgb(255, 255, 255);
+    background-color: rgb(17, 152, 185);
+    font-size: 20px;
     font-family: 'Abril Fatface', cursive;
+    text-align: center;
+    margin-left: 0px;
+  }
+
+  footer {
+    color: rgb(255, 255, 255);
+    background-color: rgb(23, 79, 94);
+    font-family: 'Abril Fatface', cursive;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    margin-top: 71px;
   }
   
+nav {
+    float:inline-start;
+  }
+
+  nav ul {
+    list-style: none;
+    overflow: hidden; /* Limpiamos errores de float */
+  }
+
+  nav ul li {
+    float: Right;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+  }
+
+  nav ul li a {
+    display: block; /* Convertimos los elementos a en elementos bloque para manipular el padding */
+    padding: 20px;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  nav ul li:hover {
+    background: #3ead47;
+  }
