@@ -4,8 +4,26 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const { serializeUser, deserializeUser } = require('passport');
 const passportLocal = require('passport-local').Strategy;
+const mysql = require('mysql');
+const myconnection = require('express-myconnection');
+
 
 const app = express();
+
+const conexion = mysql.createConnection({
+    host: 'localhost',
+    database: 'prueba',
+    user: 'sqluser',
+    password: 'password'
+});
+
+conexion.connect(function(err){
+    if(err){
+        throw err;
+    } else {
+        console.log('Conexion con la base de datos exitosa');
+    }
+});
 
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser('secreto'));
@@ -18,10 +36,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(new passportLocal(function(username, password, done){
-    if(username === "Deiby" && password === "Deiby")
-        return done(null, {id: 1, name: "Deiby"});
-
-    done(null, false);
+    let nombre = 'SELECT * FROM cuentas WHERE username = ? AND password = ?';
+    let query = mysql.format(nombre, [username, password]);
+    conexion.query(query, function(err, result){
+        if (err) 
+            throw err;
+            
+        return done(null, result[0]);
+    });
 }));
 
 //serialize
@@ -31,30 +53,28 @@ passport.serializeUser(function(user, done){
 
 //deserialize
 passport.deserializeUser(function(id, done){
-    done(null, {id: 1, name: "Deiby"});
+    done(null, { id: 1, username: 'Deiby', password: '1234' });
 });
 
 app.set('view engine', 'ejs');
 
-app.get("/",  (req, res, next) => {
+app.set('port', 8080);
+
+app.get("/home",  (req, res, next) => {
     if(req.isAuthenticated()) return next();
 
     res.redirect("/login");
 },(req, res)=>{
-    //si ya iniciamos sesión mostrar las noticias
-
-    //si no hemos iniciado sesión redireccionar a /login
-    res.send("Hola");
+    res.render("home");
 });
 
 app.get("/login",(req, res)=>{
-    //mostrar el formulario
     res.render("login");
 });
 
 app.post("/login", passport.authenticate('local', {
-    successRedirect: "/",
+    successRedirect: "/home",
     failureRedirect: "/login"
 }));
 
-app.listen(8080, ()=> console.log("Server started"));
+app.listen(app.get('port'), ()=> console.log("Server started on port: ", app.get('port')));
