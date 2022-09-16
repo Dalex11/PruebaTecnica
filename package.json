@@ -1,0 +1,27 @@
+{
+  "name": "pruebatecnica",
+  "version": "1.0.0",
+  "description": "Prueba técnica para la empresa VELAIO",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dalex11/PruebaTecnica.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dalex11/PruebaTecnica/issues"
+  },
+  "homepage": "https://github.com/Dalex11/PruebaTecnica#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "passport": "^0.6.0"
+  }
+}
