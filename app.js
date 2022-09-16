@@ -7,8 +7,14 @@ const passportLocal = require('passport-local').Strategy;
 const mysql = require('mysql');
 const request = require('request');
 
-const apiKey = '35d760f3a0f94b1c87473893a9edfcbf';
-const apiUrl = 'https://newsapi.org/v2/everything?q=tesla&from=2022-08-16&sortBy=publishedAt&apiKey=' + apiKey;
+const https = require("https");
+const apiKey = "969f8f5a1a5c82ef6f8dcac06259a549";
+const locations = "Colombia";
+const api = "https://api.openweathermap.org/data/2.5/weather?q="+locations+"&appid="+apiKey;
+
+var my_api_key = "888e1bae53f6445c8c7a762df5510430";
+var api_url = "https://newsapi.org/v2/everything?q=microsoft&from=2021-08-17&sortBy=publishedAt&apiKey="+my_api_key;
+
 const app = express();
 
 //Conexion con la bd
@@ -61,7 +67,93 @@ app.get("/home",  (req, res, next) => {
     res.redirect("/login");
 },(req, res)=>{
     res.render("home");
-}, function(req, res) {
+});
+
+app.get("/weather", function(req, res) {
+    https.get(api, function(response){
+        response.on("data", function(data){
+            const weatherData = JSON.parse(data);
+            const temperature = weatherData.main.temp;
+            res.write("<h1> La temperatura en colombia es: "+ temperature +"</h1>");
+            res.send()
+        });
+    });
+});
+
+app.get("/news", function(expReq, expRes){
+
+	request({
+		uri: api_url,
+		method: 'GET'
+	},
+	  function(err,res,body){
+	  	console.log(body);
+	  	var data = JSON.parse(body);
+
+	  		var finalResponse = `<style>
+	  							 table thead th{
+	  							 	background-color: #a7d6fc;
+	  							 	color: #020801;
+	  							 }
+	  							 </style>
+	  							 <table>
+	  							 <thead>
+	  							 <th>
+	  							 Thumbnail
+	  							 </th>
+	  							 <th>
+	  							 Title
+	  							 </th>
+	  							 <th>
+	  							 Description
+	  							 </th>
+	  							 <th>
+	  							 News URL
+	  							 </th>
+	  							 <th>
+	  							 Author
+	  							 </th>
+	  							 <th>
+	  							 publishedAt
+	  							 </th>
+	  							 <th>
+	  							 Contant
+	  							 </th>
+								 </thead><tbody>`;
+
+								 data = data.articles;
+
+								 for (var rec in data ) {
+								 	finalResponse += `
+								 					 <tr>
+								 					 <td>
+								 					 <img src="${data[rec].urlToImage}" style="width:200px;" />
+								 					 </td>
+								 					 <td>
+								 					 ${data[rec].title}
+								 					 </td>
+								 					 <td>
+								 					 ${data[rec].description}
+								 					 </td>
+								 					 <td>
+								 					 <a href="${data[rec].url}" target="_blank">${data[rec].url}</a>
+								 					 </td>
+								 					 <td>
+								 					 ${data[rec].author}
+								 					 </td>
+								 					 <td>
+								 					 ${data[rec].publishedAt}
+								 					 </td>
+								 					 <td>
+								 					 ${data[rec].content}
+								 					 </td>
+								 					 </tr>`;
+								 					 
+ 								 }
+
+ 								 finalResponse += `</tbody></table></body></html>`;
+ 								 expRes.send(finalResponse);
+ 								});
 
 });
 
